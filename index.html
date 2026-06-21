@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Konoba Tovar — tradicijska dalmatinska konoba u srcu Zadra. Riba s gradela, peka, brujet. Bez kompromisa, bez žurbe.">
+  <title>Konoba Tovar · Zadar · Dalmacija</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────── */
+    :root {
+      --parchment:    #F7F2E4;
+      --parchment-2:  #EDE5CF;
+      --ink:          #302B22;
+      --olive:        #5C6B40;
+      --olive-soft:   #7D8A5B;
+      --mustard:      #B8972E;
+      --folk-red:     #A63228;
+      --stone:        #9A8E7A;
+      --line:         rgba(48,43,34,0.14);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Spectral', serif;
+      --max-w:        1160px;
+      --section-pad:  clamp(80px, 10vw, 140px);
+    }
+
+    /* ─────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--parchment);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.72;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font-family: var(--font-body); cursor: pointer; }
+
+    /* ─────────────────────────────────────────
+       GRAIN TEXTURE OVERLAY
+    ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.045;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    header.site, main, footer.site { position: relative; z-index: 2; }
+
+    /* ─────────────────────────────────────────
+       TYPOGRAPHY HELPERS
+    ───────────────────────────────────────── */
+    .eyebrow {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mustard);
+      margin-bottom: 1rem;
+    }
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      line-height: 1.1;
+    }
+    h1 { font-size: clamp(52px, 7.5vw, 96px); }
+    h2 { font-size: clamp(36px, 5vw, 60px); }
+    h3 { font-size: clamp(22px, 3vw, 30px); font-weight: 500; }
+
+    .section-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 60px);
+    }
+
+    /* folk ornament divider */
+    .folk-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 2.5rem auto;
+      max-width: 320px;
+    }
+    .folk-divider::before,
+    .folk-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+    .folk-divider span {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--mustard);
+      line-height: 1;
+    }
+
+    /* ─────────────────────────────────────────
+       HEADER
+    ───────────────────────────────────────── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 clamp(20px, 5vw, 60px);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(247, 242, 228, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--line);
+    }
+
+    /* Logo */
+    .site-logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      text-decoration: none;
+    }
+    .site-logo .logo-small {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .site-logo .logo-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--folk-red);
+      line-height: 1;
+    }
+    .site-logo .logo-ornament {
+      font-size: 14px;
+      color: var(--mustard);
+      font-style: normal;
+    }
+
+    /* Desktop nav */
+    .site-nav {
+      display: flex;
+      gap: clamp(20px, 3vw, 40px);
+    }
+    .site-nav a {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+      transition: color 0.25s ease;
+      position: relative;
+    }
+    .site-nav a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -2px;
+      width: 0; height: 1px;
+      background: var(--folk-red);
+      transition: width 0.3s ease;
+    }
+    .site-nav a:hover { color: var(--folk-red); }
+    .site-nav a:hover::after { width: 100%; }
+
+    /* Header CTA */
+    .header-cta {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--olive);
+      border: 1px solid var(--olive);
+      padding: 9px 20px;
+      background: transparent;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+    .header-cta:hover {
+      background: var(--olive);
+      color: var(--parchment);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      z-index: 200;
+    }
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 1.5px;
+      background: var(--ink);
+      transition: transform 0.35s ease, opacity 0.25s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* Mobile overlay menu */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--parchment);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 8vw, 52px);
+      font-style: italic;
+      color: var(--ink);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--folk-red); }
+
+    /* ─────────────────────────────────────────
+       HERO — 4-IMAGE EDITORIAL GRID
+    ───────────────────────────────────────── */
+    .hero {
+      padding-top: 72px;
+      background: var(--parchment);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.65fr 1fr;
+      grid-template-rows: 360px 260px;
+      gap: 10px;
+      padding: 10px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .hero-grid figure {
+      overflow: hidden;
+      border-radius: 2px;
+      margin: 0;
+    }
+    .hero-grid figure img {
+      filter: sepia(0.18) contrast(1.05) saturate(0.88);
+      transition: transform 6s ease;
+    }
+    .hero-grid figure:hover img { transform: scale(1.03); }
+
+    /* Cell 1: spans 2 rows on left */
+    .hero-grid .hg-1 {
+      grid-row: 1 / 3;
+    }
+    /* Cell 2: top right */
+    .hero-grid .hg-2 { grid-column: 2; grid-row: 1; }
+    /* Cell 3: bottom right first half */
+    .hero-grid .hg-3 { grid-column: 2; grid-row: 2; }
+
+    /* Hero text block */
+    .hero-text {
+      text-align: center;
+      padding: clamp(48px, 8vw, 100px) clamp(20px, 5vw, 60px) clamp(60px, 9vw, 120px);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .hero-text h1 {
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .hero-h1-sub {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4vw, 44px);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--stone);
+      margin-top: 4px;
+    }
+    .hero-tagline {
+      font-family: var(--font-body);
+      font-size: clamp(17px, 2vw, 20px);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--stone);
+      margin-top: 1.4rem;
+      line-height: 1.6;
+    }
+
+    /* 3-image lower row variant — using 3 grid cells in row 2 */
+    /* Actually keeping 4 cells: 2-row col 1, row-1 col 2, row-2 col 2 split in 2 */
+    .hero-grid .hg-row2 {
+      grid-column: 2;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .hero-grid .hg-row2 figure { border-radius: 2px; }
+
+    /* ─────────────────────────────────────────
+       SHARED SECTION STYLES
+    ───────────────────────────────────────── */
+    section { padding: var(--section-pad) 0; }
+
+    /* ─────────────────────────────────────────
+       SECTION: TRADICIJA
+    ───────────────────────────────────────── */
+    .s-tradicija {
+      background: var(--parchment-2);
+    }
+    .tradicija-header {
+      text-align: center;
+      margin-bottom: clamp(48px, 7vw, 80px);
+    }
+    .tradicija-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .tradicija-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 32px;
+      align-items: start;
+      padding: 40px 0;
+      border-top: 1px solid var(--line);
+      position: relative;
+    }
+    .tradicija-item:last-child { border-bottom: 1px solid var(--line); }
+    .tradicija-item.alt {
+      grid-template-columns: 1fr 100px;
+      text-align: right;
+    }
+    .trad-num {
+      font-family: var(--font-display);
+      font-size: clamp(64px, 8vw, 96px);
+      font-weight: 400;
+      color: var(--mustard);
+      line-height: 0.9;
+      opacity: 0.55;
+      letter-spacing: -0.02em;
+    }
+    .trad-content {}
+    .trad-ornament {
+      font-size: 18px;
+      color: var(--folk-red);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .trad-title {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 3.5vw, 34px);
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.15;
+    }
+    .trad-body {
+      font-size: 16px;
+      color: var(--stone);
+      font-style: italic;
+      line-height: 1.7;
+    }
+    /* For alt items: num goes to right column */
+    .tradicija-item.alt .trad-num { grid-column: 2; grid-row: 1; text-align: right; }
+    .tradicija-item.alt .trad-content { grid-column: 1; grid-row: 1; }
+
+    /* Donkey mini ornament between values */
+    .trad-donkey-sep {
+      display: flex;
+      justify-content: center;
+      padding: 8px 0;
+      opacity: 0.22;
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION: PRIČA
+    ───────────────────────────────────────── */
+    .s-prica { background: var(--parchment); }
+    .prica-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 80px);
+      align-items: center;
+    }
+    .prica-text {}
+    .prica-text h2 { margin-bottom: 1.5rem; }
+    .prica-text p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+    }
+    .prica-text p:last-of-type { margin-bottom: 0; color: var(--stone); font-style: italic; }
+    .prica-img-wrap {
+      border-radius: 2px;
+      overflow: hidden;
+      aspect-ratio: 5 / 6;
+    }
+    .prica-img-wrap img {
+      filter: sepia(0.14) contrast(1.04) saturate(0.9);
+      height: 100%;
+      object-fit: cover;
+      transition: transform 8s ease;
+    }
+    .prica-img-wrap:hover img { transform: scale(1.04); }
+
+    /* Folk border separator */
+    .folk-border {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: var(--section-pad) auto 0;
+      max-width: var(--max-w);
+      padding: 0 clamp(20px, 5vw, 60px);
+    }
+    .folk-border::before, .folk-border::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+    .folk-border-inner {
+      font-size: 22px;
+      color: var(--mustard);
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION: FOLK DONKEY FEATURE
+    ───────────────────────────────────────── */
+    .s-donkey-feature {
+      background: var(--parchment-2);
+    }
+    .donkey-feature-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 32px;
+    }
+    .donkey-svg-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .donkey-quote {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.8vw, 28px);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+      max-width: 640px;
+      line-height: 1.5;
+    }
+    .donkey-quote cite {
+      display: block;
+      margin-top: 12px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stone);
+      font-style: normal;
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION: JELA
+    ───────────────────────────────────────── */
+    .s-jela { background: var(--parchment); }
+    .jela-header {
+      text-align: center;
+      margin-bottom: clamp(24px, 4vw, 48px);
+    }
+    .jela-subtitle {
+      font-style: italic;
+      color: var(--stone);
+      margin-top: 12px;
+      font-size: 16px;
+    }
+
+    /* Wide food image accent */
+    .jela-img-accent {
+      width: 100%;
+      max-height: 340px;
+      overflow: hidden;
+      border-radius: 2px;
+      margin-bottom: clamp(36px, 5vw, 60px);
+      position: relative;
+    }
+    .jela-img-accent img {
+      filter: sepia(0.2) contrast(1.06) saturate(0.85);
+      max-height: 340px;
+      object-fit: cover;
+    }
+    .jela-img-accent::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(247,242,228,0.18), rgba(247,242,228,0.6));
+    }
+
+    /* Menu list */
+    .jela-list { max-width: 760px; margin: 0 auto; }
+    .jela-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 20px 28px;
+      align-items: baseline;
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+    .jela-item:last-child { border-bottom: 1px solid var(--line); }
+    .jela-num {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 400;
+      color: var(--mustard);
+      line-height: 1;
+      opacity: 0.7;
+      letter-spacing: -0.02em;
+    }
+    .jela-content {}
+    .jela-name {
+      font-family: var(--font-display);
+      font-size: clamp(19px, 2.5vw, 24px);
+      font-weight: 600;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .jela-desc {
+      font-size: 15px;
+      font-style: italic;
+      color: var(--stone);
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION: GALERIJA
+    ───────────────────────────────────────── */
+    .s-galerija { background: var(--parchment); }
+    .galerija-header { text-align: center; margin-bottom: clamp(36px, 5vw, 60px); }
+    .gallery-grid {
+      columns: 3;
+      column-gap: 10px;
+    }
+    .gallery-grid figure {
+      break-inside: avoid;
+      margin-bottom: 10px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .gallery-grid figure img {
+      filter: sepia(0.15) contrast(1.06) saturate(0.85);
+      transition: filter 0.4s ease, transform 0.6s ease;
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .gallery-grid figure:hover img {
+      filter: sepia(0.05) contrast(1.08) saturate(1);
+      transform: scale(1.02);
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION: LOKACIJA
+    ───────────────────────────────────────── */
+    .s-lokacija { background: var(--parchment-2); }
+    .lokacija-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(48px, 6vw, 80px);
+      align-items: start;
+      margin-bottom: clamp(40px, 5vw, 60px);
+    }
+    .lokacija-text h2 { margin-bottom: 1rem; }
+    .lokacija-text .sub {
+      font-size: 17px;
+      color: var(--stone);
+      font-style: italic;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    /* Facebook block */
+    .fb-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: rgba(247,242,228,0.6);
+      margin-bottom: 2rem;
+      text-decoration: none;
+      transition: border-color 0.25s ease;
+    }
+    .fb-block:hover { border-color: var(--olive); }
+    .fb-icon {
+      flex-shrink: 0;
+      color: var(--olive);
+    }
+    .fb-text {
+      font-size: 14px;
+      color: var(--stone);
+      font-style: italic;
+    }
+    .fb-text strong {
+      display: block;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--olive);
+      margin-bottom: 2px;
+    }
+
+    /* Hours */
+    .hours-list { list-style: none; }
+    .hours-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 16px;
+    }
+    .hours-list li:first-child { border-top: 1px solid var(--line); }
+    .hours-ornament {
+      color: var(--mustard);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* TripAdvisor badge */
+    .ta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1.8rem;
+      padding: 10px 18px;
+      border: 1px solid var(--olive-soft);
+      border-radius: 2px;
+      font-size: 14px;
+      color: var(--olive);
+      font-weight: 500;
+    }
+    .ta-stars { color: var(--mustard); }
+
+    /* Map */
+    .lokacija-map {
+      width: 100%;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .lokacija-map iframe {
+      display: block;
+      width: 100%;
+      height: 420px;
+      border: none;
+    }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    footer.site {
+      background: var(--parchment-2);
+      border-top: 1px solid var(--line);
+      padding: clamp(48px, 8vw, 80px) clamp(20px, 5vw, 60px);
+      text-align: center;
+    }
+    .footer-ornament {
+      font-family: var(--font-display);
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .footer-sub {
+      font-style: italic;
+      font-size: 15px;
+      color: var(--stone);
+      margin-bottom: 2rem;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      margin-bottom: 2.5rem;
+    }
+    .footer-nav a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--stone);
+      transition: color 0.25s;
+    }
+    .footer-nav a:hover { color: var(--folk-red); }
+    .footer-donkey {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      opacity: 0.35;
+    }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--stone);
+      letter-spacing: 0.08em;
+    }
+
+    /* ─────────────────────────────────────────
+       STICKY MOBILE BAR
+    ───────────────────────────────────────── */
+    .mobile-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 90;
+      background: var(--parchment);
+      border-top: 1px solid var(--line);
+      padding: 10px 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .mobile-bar-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .mobile-bar-cta {
+      flex-shrink: 0;
+      background: var(--folk-red);
+      color: var(--parchment);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 11px 18px;
+      border: none;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.25s ease;
+    }
+    .mobile-bar-cta:hover { background: var(--ink); }
+
+    /* ─────────────────────────────────────────
+       REVEAL ANIMATION BASE
+    ───────────────────────────────────────── */
+    .reveal { opacity: 0; }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .site-nav, .header-cta { display: none; }
+      .hamburger { display: flex; }
+
+      .hero-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 220px 180px;
+      }
+      .hero-grid .hg-1 { grid-column: 1 / 3; grid-row: 1; }
+      .hero-grid .hg-row2 { grid-column: 1 / 3; grid-row: 2; }
+
+      .prica-grid { grid-template-columns: 1fr; }
+      .prica-img-wrap { aspect-ratio: 16 / 9; order: -1; }
+
+      .lokacija-grid { grid-template-columns: 1fr; }
+
+      .gallery-grid { columns: 2; }
+
+      .tradicija-item { grid-template-columns: 70px 1fr; gap: 20px; }
+      .tradicija-item.alt { grid-template-columns: 1fr; text-align: left; }
+      .tradicija-item.alt .trad-num { grid-column: 1; text-align: left; }
+      .tradicija-item.alt .trad-content { grid-column: 1; grid-row: 2; }
+
+      .mobile-bar { display: flex; }
+      body { padding-bottom: 62px; }
+    }
+
+    @media (max-width: 540px) {
+      .hero-grid { grid-template-rows: 200px 150px; }
+      .gallery-grid { columns: 1; }
+      .jela-item { grid-template-columns: 60px 1fr; gap: 14px; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<header class="site-header site" id="site-header">
+  <a href="#" class="site-logo" aria-label="Konoba Tovar — naslovna">
+    <span class="logo-small">Konoba</span>
+    <span class="logo-main">
+      Tovar
+      <span class="logo-ornament" aria-hidden="true">❧</span>
+    </span>
+  </a>
+
+  <nav class="site-nav" aria-label="Glavna navigacija">
+    <a href="#prica">Priča</a>
+    <a href="#tradicija">Tradicija</a>
+    <a href="#jela">Jela</a>
+    <a href="#galerija">Galerija</a>
+    <a href="#lokacija">Lokacija</a>
+  </nav>
+
+  <a href="#lokacija" class="header-cta">Nađite nas</a>
+
+  <button class="hamburger" id="hamburger" aria-label="Otvori izbornik" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile overlay menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigacijski izbornik">
+  <a href="#prica" class="menu-link">Priča</a>
+  <a href="#tradicija" class="menu-link">Tradicija</a>
+  <a href="#jela" class="menu-link">Jela</a>
+  <a href="#galerija" class="menu-link">Galerija</a>
+  <a href="#lokacija" class="menu-link">Lokacija</a>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════
+     HERO — 4-IMAGE EDITORIAL GRID
+═══════════════════════════════════════ -->
+<section class="hero" aria-label="Naslovna">
+  <div class="hero-grid">
+    <!-- Cell 1: Large, spans both rows on left -->
+    <figure class="hg-1">
+      <img
+        src="https://loremflickr.com/800/600/zadar,old,town,stone,daylight?lock=8001"
+        alt="Zadar — stari grad, kamene kalete na danjem svjetlu"
+        loading="eager"
+      >
+    </figure>
+
+    <!-- Cell 2: tall top right -->
+    <figure class="hg-2">
+      <img
+        src="https://loremflickr.com/500/600/donkey,dalmatia,mediterranean?lock=8002"
+        alt="Tovar — dalmatinski magarac, mediteranski simbol"
+        loading="eager"
+      >
+    </figure>
+
+    <!-- Row 2 right: 2 smaller images side by side -->
+    <div class="hg-row2">
+      <figure>
+        <img
+          src="https://loremflickr.com/400/300/konoba,rustic,wood?lock=8003"
+          alt="Rustična konoba — drvo, kamen, tradicija"
+          loading="eager"
+        >
+      </figure>
+      <figure>
+        <img
+          src="https://loremflickr.com/400/300/grilled,fish,dalmatian?lock=8004"
+          alt="Riba s gradela — svježa, dalmatinska"
+          loading="eager"
+        >
+      </figure>
+    </div>
+  </div>
+
+  <div class="hero-text">
+    <span class="eyebrow">Zadar · Dalmacija · od pamtivijeka</span>
+    <h1 class="reveal">
+      Konoba Tovar
+      <span class="hero-h1-sub">gdje je Dalmacija još živa</span>
+    </h1>
+    <p class="hero-tagline reveal">Tvrdoglav kao tovar. Vjeran kao more. Iskren kao kamen.</p>
+
+    <div class="folk-divider">
+      <span aria-hidden="true">✦</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     TRADICIJA — VALUES LIST (V2 UNIQUE)
+═══════════════════════════════════════ -->
+<section class="s-tradicija" id="tradicija" aria-label="Tradicija">
+  <div class="section-inner">
+    <div class="tradicija-header reveal">
+      <span class="eyebrow">Što nas čini Tovarom</span>
+      <h2>Tradicija koja ne popušta</h2>
+    </div>
+
+    <div class="tradicija-list">
+
+      <!-- 1. Porijeklo -->
+      <div class="tradicija-item reveal">
+        <div class="trad-num">01</div>
+        <div class="trad-content">
+          <span class="trad-ornament" aria-hidden="true">❧</span>
+          <h3 class="trad-title">Porijeklo</h3>
+          <p class="trad-body">Svaka riba zna ime ribara. Svaka kapljica ulja zna maslinov gaj.</p>
+        </div>
+      </div>
+
+      <!-- Mini donkey between items -->
+      <div class="trad-donkey-sep" aria-hidden="true">
+        <svg width="36" height="24" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M80 95 Q70 80 60 75 Q50 70 45 60 Q42 55 48 52 Q55 50 62 56 Q68 45 65 35 Q63 28 70 26 Q78 24 82 32 Q86 40 84 50 L95 48 Q102 30 112 28 Q122 26 118 40 Q115 50 108 58 L130 60 Q140 62 142 72 Q144 82 134 86 Q124 90 115 85 L110 95 Q105 108 95 110 Q85 112 80 95Z" fill="#A63228"/>
+          <path d="M63 34 Q60 25 66 20 Q72 15 68 28Z" fill="#A63228"/>
+          <path d="M75 26 Q72 16 78 14 Q84 12 80 26Z" fill="#A63228"/>
+          <line x1="60" y1="86" x2="58" y2="108" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="75" y1="90" x2="73" y2="112" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="105" y1="88" x2="103" y2="110" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="118" y1="82" x2="120" y2="104" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <path d="M138 70 Q152 68 155 78" stroke="#A63228" stroke-width="4" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+
+      <!-- 2. Strpljenje (alt — right-aligned num) -->
+      <div class="tradicija-item alt reveal">
+        <div class="trad-content">
+          <span class="trad-ornament" aria-hidden="true">❧</span>
+          <h3 class="trad-title">Strpljenje</h3>
+          <p class="trad-body">Peka ne trpi žurbu. Brujet ne trpi kompromis. Mi ne trpimo ni jedno ni drugo.</p>
+        </div>
+        <div class="trad-num">02</div>
+      </div>
+
+      <div class="trad-donkey-sep" aria-hidden="true">
+        <svg width="36" height="24" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M80 95 Q70 80 60 75 Q50 70 45 60 Q42 55 48 52 Q55 50 62 56 Q68 45 65 35 Q63 28 70 26 Q78 24 82 32 Q86 40 84 50 L95 48 Q102 30 112 28 Q122 26 118 40 Q115 50 108 58 L130 60 Q140 62 142 72 Q144 82 134 86 Q124 90 115 85 L110 95 Q105 108 95 110 Q85 112 80 95Z" fill="#A63228"/>
+          <line x1="60" y1="86" x2="58" y2="108" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="75" y1="90" x2="73" y2="112" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="105" y1="88" x2="103" y2="110" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="118" y1="82" x2="120" y2="104" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- 3. Karakter -->
+      <div class="tradicija-item reveal">
+        <div class="trad-num">03</div>
+        <div class="trad-content">
+          <span class="trad-ornament" aria-hidden="true">❧</span>
+          <h3 class="trad-title">Karakter</h3>
+          <p class="trad-body">Tovar je tvrdoglav. I mi smo. Ne mijenjamo recept da bismo bili popularni.</p>
+        </div>
+      </div>
+
+      <div class="trad-donkey-sep" aria-hidden="true">
+        <svg width="36" height="24" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M80 95 Q70 80 60 75 Q50 70 45 60 Q42 55 48 52 Q55 50 62 56 Q68 45 65 35 Q63 28 70 26 Q78 24 82 32 Q86 40 84 50 L95 48 Q102 30 112 28 Q122 26 118 40 Q115 50 108 58 L130 60 Q140 62 142 72 Q144 82 134 86 Q124 90 115 85 L110 95 Q105 108 95 110 Q85 112 80 95Z" fill="#A63228"/>
+          <line x1="60" y1="86" x2="58" y2="108" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="75" y1="90" x2="73" y2="112" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="105" y1="88" x2="103" y2="110" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="118" y1="82" x2="120" y2="104" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- 4. Zajednica (alt) -->
+      <div class="tradicija-item alt reveal">
+        <div class="trad-content">
+          <span class="trad-ornament" aria-hidden="true">❧</span>
+          <h3 class="trad-title">Zajednica</h3>
+          <p class="trad-body">Zadar nas hrani koliko god mi hranimo Zadar. Lokalno, uvijek.</p>
+        </div>
+        <div class="trad-num">04</div>
+      </div>
+
+      <div class="trad-donkey-sep" aria-hidden="true">
+        <svg width="36" height="24" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M80 95 Q70 80 60 75 Q50 70 45 60 Q42 55 48 52 Q55 50 62 56 Q68 45 65 35 Q63 28 70 26 Q78 24 82 32 Q86 40 84 50 L95 48 Q102 30 112 28 Q122 26 118 40 Q115 50 108 58 L130 60 Q140 62 142 72 Q144 82 134 86 Q124 90 115 85 L110 95 Q105 108 95 110 Q85 112 80 95Z" fill="#A63228"/>
+          <line x1="60" y1="86" x2="58" y2="108" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="75" y1="90" x2="73" y2="112" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="105" y1="88" x2="103" y2="110" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+          <line x1="118" y1="82" x2="120" y2="104" stroke="#A63228" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- 5. Iskrenost -->
+      <div class="tradicija-item reveal">
+        <div class="trad-num">05</div>
+        <div class="trad-content">
+          <span class="trad-ornament" aria-hidden="true">❧</span>
+          <h3 class="trad-title">Iskrenost</h3>
+          <p class="trad-body">Bez skrivenih troškova. Bez ukrašavanja. Što vidite, to dobijete.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PRIČA — STORY
+═══════════════════════════════════════ -->
+<section class="s-prica" id="prica" aria-label="Naša priča">
+  <div class="section-inner">
+    <div class="prica-grid">
+      <div class="prica-text">
+        <span class="eyebrow reveal">Tko smo</span>
+        <h2 class="reveal">Tovar — naš karakter,<br>naša filozofija</h2>
+        <p class="reveal">
+          U dalmatinskom folkloru, tovar nije samo životinja — on je karakter. Tvrdoglav, siguran u svoja kopita, nepotkupljiv marom. Nosi teret bez prigovora, pamti svaki put bez karte, vraća se kući bez vodiča. Konoba Tovar nosi to ime s ponosom jer prepoznaje sebe u tom opisu: uporan rad, vjerna receptura, iskrena gostoljubivost koja ne ovisi o sezoni ni modi.
+        </p>
+        <p class="reveal">
+          Zadar je grad rimskih foruma i romaničkih crkava, grad u kojemu se more čuje ispod kamena i sunce miriše na kaduljу. U uskim kaletama staroga grada, gdje kameni svod svaki glas odjekuje drugačije, naša konoba čuva onaj ritam koji ne žuri. Peka treba sat i pol. Brujet treba strpljenje. Gost treba mir. Mi smo ovdje — bez žurbe, bez kompromisa.
+        </p>
+      </div>
+
+      <div class="prica-img-wrap reveal">
+        <img
+          src="https://loremflickr.com/650/800/stone,tavern,dalmatian,interior?lock=8010"
+          alt="Unutrašnjost dalmatinske konobe — kamen, drvo, tradicija"
+          loading="lazy"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Folk decorative border -->
+  <div class="folk-border" aria-hidden="true">
+    <span class="folk-border-inner">❧</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOLK DONKEY FEATURE — V2 SIGNATURE
+═══════════════════════════════════════ -->
+<section class="s-donkey-feature" aria-label="O tovarskom karakteru">
+  <div class="section-inner">
+    <div class="donkey-feature-inner">
+
+      <div class="donkey-svg-wrap reveal" aria-hidden="true">
+        <!-- Folk-art donkey SVG — decorative, embroidery-style with flowers/dots -->
+        <svg width="340" height="240" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Folk-art donkey illustration">
+          <!-- Folk ornament dots around donkey -->
+          <!-- Top left cluster -->
+          <circle cx="18" cy="22" r="4" fill="#B8972E" opacity="0.7"/>
+          <circle cx="28" cy="14" r="2.5" fill="#B8972E" opacity="0.5"/>
+          <circle cx="10" cy="32" r="2" fill="#B8972E" opacity="0.45"/>
+          <!-- Flower top left -->
+          <circle cx="20" cy="44" r="3" fill="#B8972E" opacity="0.55"/>
+          <circle cx="14" cy="44" r="2" fill="#B8972E" opacity="0.35"/>
+          <circle cx="26" cy="44" r="2" fill="#B8972E" opacity="0.35"/>
+          <circle cx="20" cy="38" r="2" fill="#B8972E" opacity="0.35"/>
+          <circle cx="20" cy="50" r="2" fill="#B8972E" opacity="0.35"/>
+
+          <!-- Top right cluster -->
+          <circle cx="178" cy="18" r="4" fill="#B8972E" opacity="0.7"/>
+          <circle cx="188" cy="28" r="2.5" fill="#B8972E" opacity="0.5"/>
+          <circle cx="168" cy="12" r="2" fill="#B8972E" opacity="0.45"/>
+          <!-- Flower top right -->
+          <circle cx="175" cy="42" r="3" fill="#B8972E" opacity="0.55"/>
+          <circle cx="169" cy="42" r="2" fill="#B8972E" opacity="0.35"/>
+          <circle cx="181" cy="42" r="2" fill="#B8972E" opacity="0.35"/>
+          <circle cx="175" cy="36" r="2" fill="#B8972E" opacity="0.35"/>
+          <circle cx="175" cy="48" r="2" fill="#B8972E" opacity="0.35"/>
+
+          <!-- Bottom left -->
+          <circle cx="22" cy="114" r="3.5" fill="#B8972E" opacity="0.6"/>
+          <circle cx="12" cy="104" r="2" fill="#B8972E" opacity="0.4"/>
+          <circle cx="30" cy="122" r="2" fill="#B8972E" opacity="0.4"/>
+
+          <!-- Bottom right -->
+          <circle cx="174" cy="110" r="3.5" fill="#B8972E" opacity="0.6"/>
+          <circle cx="184" cy="100" r="2" fill="#B8972E" opacity="0.4"/>
+          <circle cx="166" cy="120" r="2" fill="#B8972E" opacity="0.4"/>
+
+          <!-- Small dot scatter -->
+          <circle cx="45" cy="12" r="1.5" fill="#B8972E" opacity="0.3"/>
+          <circle cx="155" cy="10" r="1.5" fill="#B8972E" opacity="0.3"/>
+          <circle cx="8" cy="72" r="1.5" fill="#B8972E" opacity="0.3"/>
+          <circle cx="192" cy="68" r="1.5" fill="#B8972E" opacity="0.3"/>
+          <circle cx="12" cy="56" r="1.5" fill="#B8972E" opacity="0.25"/>
+          <circle cx="188" cy="54" r="1.5" fill="#B8972E" opacity="0.25"/>
+
+          <!-- DONKEY BODY — folk-art style, filled with folk-red -->
+          <!-- Main torso -->
+          <path d="M55 90 Q48 78 44 66 Q40 54 46 48 Q52 42 60 48 Q66 38 64 28 Q62 20 70 18 Q78 16 80 26 Q83 36 80 48 L96 46 Q104 26 116 24 Q128 22 124 38 Q120 50 112 58 L138 62 Q150 64 152 76 Q154 88 142 92 Q132 96 120 90 L118 100 Q113 116 98 118 Q83 120 78 102 L68 100 Q58 104 55 90Z"
+                fill="#A63228"/>
+
+          <!-- Ear left -->
+          <path d="M65 26 Q62 14 68 10 Q74 6 72 22Z" fill="#A63228"/>
+          <!-- Ear right -->
+          <path d="M78 24 Q76 12 82 10 Q88 8 84 24Z" fill="#A63228"/>
+
+          <!-- Eye -->
+          <circle cx="68" cy="36" r="3" fill="#F7F2E4"/>
+          <circle cx="68.8" cy="36.5" r="1.6" fill="#302B22"/>
+
+          <!-- Nostril -->
+          <ellipse cx="58" cy="52" rx="2.5" ry="1.5" fill="#7D1F18" opacity="0.6"/>
+
+          <!-- Tail -->
+          <path d="M142 76 Q158 68 160 78 Q162 88 150 90" stroke="#A63228" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M150 90 Q153 96 148 100" stroke="#A63228" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+          <!-- Legs (4) -->
+          <!-- Front left -->
+          <rect x="66" y="100" width="8" height="26" rx="3" fill="#A63228"/>
+          <!-- Front right -->
+          <rect x="80" y="100" width="8" height="26" rx="3" fill="#A63228"/>
+          <!-- Back left -->
+          <rect x="107" y="98" width="8" height="26" rx="3" fill="#A63228"/>
+          <!-- Back right -->
+          <rect x="120" y="98" width="8" height="26" rx="3" fill="#A63228"/>
+
+          <!-- Hooves -->
+          <rect x="64" y="122" width="12" height="5" rx="2" fill="#7D1F18"/>
+          <rect x="78" y="122" width="12" height="5" rx="2" fill="#7D1F18"/>
+          <rect x="105" y="120" width="12" height="5" rx="2" fill="#7D1F18"/>
+          <rect x="118" y="120" width="12" height="5" rx="2" fill="#7D1F18"/>
+
+          <!-- Mane -->
+          <path d="M68 20 Q72 12 76 20 Q80 12 84 20 Q88 12 92 22" stroke="#7D1F18" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+
+          <!-- Saddle / pack ornament -->
+          <path d="M88 58 Q100 54 112 58 Q116 66 112 72 Q100 76 88 72 Q84 66 88 58Z" fill="#B8972E" opacity="0.55"/>
+          <path d="M88 58 Q100 54 112 58" stroke="#7D1F18" stroke-width="1.5" fill="none" opacity="0.4"/>
+
+          <!-- Folk cross detail on saddle -->
+          <line x1="100" y1="60" x2="100" y2="72" stroke="#A63228" stroke-width="1.5" opacity="0.5"/>
+          <line x1="94" y1="66" x2="106" y2="66" stroke="#A63228" stroke-width="1.5" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <blockquote class="donkey-quote reveal">
+        <p>„Tovar zna put. Pamti svaki put kamo je nosio terete. Svaki kamen zadarske kalete. Svaki okret ruke koja je spravljala hranu."</p>
+        <cite>— Konoba Tovar · Zadar</cite>
+      </blockquote>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     JELA — MENU
+═══════════════════════════════════════ -->
+<section class="s-jela" id="jela" aria-label="Naš jelovnik">
+  <div class="section-inner">
+    <div class="jela-header">
+      <span class="eyebrow reveal">Naš stol</span>
+      <h2 class="reveal">Što nam more i zemlja daju</h2>
+      <p class="jela-subtitle reveal">Jela naše kuhinje — bez kompromisa, bez cijena na webu</p>
+    </div>
+
+    <!-- Wide food image -->
+    <div class="jela-img-accent reveal">
+      <img
+        src="https://loremflickr.com/1200/400/dalmatian,food,fish,peka?lock=8020"
+        alt="Dalmatinska kuhinja — riba, peka, tradicija"
+        loading="lazy"
+      >
+    </div>
+
+    <!-- Menu list -->
+    <div class="jela-list" role="list">
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">01</div>
+        <div class="jela-content">
+          <span class="jela-name">Riba s gradela</span>
+          <span class="jela-desc">svježa riba s drvenog ugljena, samo sol i ulje</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">02</div>
+        <div class="jela-content">
+          <span class="jela-name">Ispod peke</span>
+          <span class="jela-desc">janjetina, povrće, polako i pošteno</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">03</div>
+        <div class="jela-content">
+          <span class="jela-name">Školjke na buzaru</span>
+          <span class="jela-desc">dagnje, kamenice, bijelo vino, češnjak</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">04</div>
+        <div class="jela-content">
+          <span class="jela-name">Hobotnica</span>
+          <span class="jela-desc">salata ili vinačeto, po staroj dalmatinskoj recepturi</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">05</div>
+        <div class="jela-content">
+          <span class="jela-name">Pašticada</span>
+          <span class="jela-desc">domaća govedina u slatko-kiselom, s njokima</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">06</div>
+        <div class="jela-content">
+          <span class="jela-name">Domaće tjestenine</span>
+          <span class="jela-desc">fuži, pljukanci — što konoba spremi</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">07</div>
+        <div class="jela-content">
+          <span class="jela-name">Peka i brujet</span>
+          <span class="jela-desc">sezonski, pitajte nas</span>
+        </div>
+      </div>
+
+      <div class="jela-item reveal" role="listitem">
+        <div class="jela-num">08</div>
+        <div class="jela-content">
+          <span class="jela-name">Sir i pršut</span>
+          <span class="jela-desc">dalmatinski, bez priče</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     GALERIJA
+═══════════════════════════════════════ -->
+<section class="s-galerija" id="galerija" aria-label="Galerija">
+  <div class="section-inner">
+    <div class="galerija-header">
+      <span class="eyebrow reveal">Atmosfera</span>
+      <h2 class="reveal">Kameni grad, toplo gostoprimstvo</h2>
+    </div>
+
+    <div class="gallery-grid">
+      <figure>
+        <img
+          src="https://loremflickr.com/600/750/zadar,stone,medieval?lock=8030"
+          alt="Zadar — kameni grad, srednjovjekovni zidovi"
+          loading="lazy"
+        >
+      </figure>
+      <figure>
+        <img
+          src="https://loremflickr.com/600/500/konoba,wood,rustic?lock=8031"
+          alt="Konoba — drvo i rustičan interijer"
+          loading="lazy"
+        >
+      </figure>
+      <figure>
+        <img
+          src="https://loremflickr.com/600/680/adriatic,sea,dalmatia?lock=8032"
+          alt="Jadransko more — Dalmacija"
+          loading="lazy"
+        >
+      </figure>
+      <figure>
+        <img
+          src="https://loremflickr.com/600/450/peka,lamb,food?lock=8033"
+          alt="Janjetina ispod peke"
+          loading="lazy"
+        >
+      </figure>
+      <figure>
+        <img
+          src="https://loremflickr.com/600/600/olive,oil,mediterranean?lock=8034"
+          alt="Maslinovo ulje — mediteranska tradicija"
+          loading="lazy"
+        >
+      </figure>
+      <figure>
+        <img
+          src="https://loremflickr.com/600/550/wine,dalmatian,glass?lock=8035"
+          alt="Dalmatinsko vino u čaši"
+          loading="lazy"
+        >
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     LOKACIJA / POSJETITE NAS
+═══════════════════════════════════════ -->
+<section class="s-lokacija" id="lokacija" aria-label="Lokacija i informacije">
+  <div class="section-inner">
+
+    <div class="lokacija-grid">
+      <div class="lokacija-text">
+        <span class="eyebrow reveal">Gdje smo</span>
+        <h2 class="reveal">Nađite nas u Zadru</h2>
+        <p class="sub reveal">
+          Nismo daleko — u srcu staroga grada, gdje kamene kalete znatiželjne i ne bi bile da ih nema. Dođite bez rezervacije, dočekajmo vas.
+        </p>
+
+        <!-- Facebook -->
+        <a href="#" class="fb-block reveal" aria-label="Posjetite nas na Facebooku">
+          <svg class="fb-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.791-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.885v2.27h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+          </svg>
+          <span class="fb-text">
+            <strong>Facebook</strong>
+            Na Facebooku dijelimo novosti, posebne večeri i sezone.
+          </span>
+        </a>
+
+        <!-- Hours -->
+        <ul class="hours-list reveal" aria-label="Radno vrijeme">
+          <li>
+            <span class="hours-ornament" aria-hidden="true">✦</span>
+            <span><strong>Ponedjeljak – Subota:</strong> 12:00 – 23:00</span>
+          </li>
+          <li>
+            <span class="hours-ornament" aria-hidden="true">✦</span>
+            <span><strong>Nedjelja:</strong> 12:00 – 22:00</span>
+          </li>
+          <li>
+            <span class="hours-ornament" aria-hidden="true">✦</span>
+            <span><strong>Zatvoreni:</strong> prosinac – veljača</span>
+          </li>
+        </ul>
+
+        <!-- TripAdvisor -->
+        <div class="ta-badge reveal" aria-label="TripAdvisor ocjena: 4.3 od 5, 131 recenzija">
+          <span class="ta-stars" aria-hidden="true">★★★★</span>
+          <span>4.3 · 131 recenzija na TripAdvisoru</span>
+        </div>
+      </div>
+
+      <div class="lokacija-text">
+        <!-- Map -->
+        <div class="lokacija-map reveal" aria-label="Google karta — lokacija Konobe Tovar u Zadru">
+          <iframe
+            src="https://maps.google.com/maps?q=Konoba+Tovar+Zadar&output=embed"
+            title="Konoba Tovar na karti Zadra"
+            loading="lazy"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="site" aria-label="Podnožje stranice">
+  <p class="footer-ornament">❧ KONOBA TOVAR ❧</p>
+  <p class="footer-sub">Zadar · Dalmacija</p>
+
+  <nav class="footer-nav" aria-label="Podnožna navigacija">
+    <a href="#prica">Priča</a>
+    <a href="#tradicija">Tradicija</a>
+    <a href="#jela">Jela</a>
+    <a href="#galerija">Galerija</a>
+    <a href="#lokacija">Lokacija</a>
+  </nav>
+
+  <!-- Small footer donkey -->
+  <div class="footer-donkey" aria-hidden="true">
+    <svg width="72" height="50" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+      <path d="M55 90 Q48 78 44 66 Q40 54 46 48 Q52 42 60 48 Q66 38 64 28 Q62 20 70 18 Q78 16 80 26 Q83 36 80 48 L96 46 Q104 26 116 24 Q128 22 124 38 Q120 50 112 58 L138 62 Q150 64 152 76 Q154 88 142 92 Q132 96 120 90 L118 100 Q113 116 98 118 Q83 120 78 102 L68 100 Q58 104 55 90Z" fill="#A63228" opacity="0.6"/>
+      <path d="M65 26 Q62 14 68 10 Q74 6 72 22Z" fill="#A63228" opacity="0.6"/>
+      <path d="M78 24 Q76 12 82 10 Q88 8 84 24Z" fill="#A63228" opacity="0.6"/>
+      <rect x="66" y="100" width="8" height="22" rx="3" fill="#A63228" opacity="0.6"/>
+      <rect x="80" y="100" width="8" height="22" rx="3" fill="#A63228" opacity="0.6"/>
+      <rect x="107" y="98" width="8" height="22" rx="3" fill="#A63228" opacity="0.6"/>
+      <rect x="120" y="98" width="8" height="22" rx="3" fill="#A63228" opacity="0.6"/>
+      <path d="M142 76 Q158 68 160 78 Q162 88 150 90" stroke="#A63228" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <p class="footer-copy">© 2025 Konoba Tovar · Zadar · Dalmacija</p>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     STICKY MOBILE BAR
+═══════════════════════════════════════ -->
+<div class="mobile-bar" role="complementary" aria-label="Brzi pristup lokaciji">
+  <span class="mobile-bar-name">Konoba Tovar ✦</span>
+  <a href="#lokacija" class="mobile-bar-cta">Pronađite nas u Zadru →</a>
+</div>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  // ── GSAP plugin registration ──────────────────────────
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── LENIS smooth scroll ───────────────────────────────
+  const lenis = new Lenis({
+    duration: 1.4,
+    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+    smoothWheel: true
+  });
+
+  gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  lenis.on('scroll', ScrollTrigger.update);
+
+  // ── HEADER scroll state ───────────────────────────────
+  var header = document.getElementById('site-header');
+  ScrollTrigger.create({
+    start: 'top -60',
+    onUpdate: function (self) {
+      header.classList.toggle('scrolled', self.scroll() > 60);
+    }
+  });
+
+  // ── HERO GRID stagger ─────────────────────────────────
+  gsap.from('.hero-grid figure', {
+    opacity: 0,
+    y: 30,
+    duration: 0.9,
+    stagger: 0.12,
+    ease: 'power2.out',
+    delay: 0.2
+  });
+
+  // ── SCROLL REVEALS ────────────────────────────────────
+  gsap.utils.toArray('.reveal').forEach(function (el) {
+    gsap.fromTo(el,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          once: true
+        }
+      }
+    );
+  });
+
+  // ── PREFERS-REDUCED-MOTION ────────────────────────────
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    ScrollTrigger.getAll().forEach(function (t) { t.kill(); });
+    // Make all reveal elements visible immediately
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  }
+
+  // ── HAMBURGER / MOBILE MENU ───────────────────────────
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobile-menu');
+  var menuLinks = mobileMenu.querySelectorAll('.menu-link');
+
+  function openMenu() {
+    hamburger.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileMenu.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lenis.stop();
+  }
+
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+    lenis.start();
+  }
+
+  hamburger.addEventListener('click', function () {
+    if (mobileMenu.classList.contains('open')) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  // Close menu on link click
+  menuLinks.forEach(function (link) {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+      closeMenu();
+    }
+  });
+
+  // ── SMOOTH ANCHOR SCROLL ──────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      var href = anchor.getAttribute('href');
+      if (href === '#') return;
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        lenis.scrollTo(target, { offset: -72, duration: 1.6 });
+      }
+    });
+  });
+
+  // ── GALLERY images — stagger on scroll ───────────────
+  gsap.utils.toArray('.gallery-grid figure').forEach(function (fig, i) {
+    gsap.fromTo(fig,
+      { opacity: 0, y: 24 },
+      {
+        opacity: 1, y: 0,
+        duration: 0.9,
+        ease: 'power2.out',
+        delay: (i % 3) * 0.08,
+        scrollTrigger: {
+          trigger: fig,
+          start: 'top 88%',
+          once: true
+        }
+      }
+    );
+  });
+
+  // ── JELA ITEMS stagger ────────────────────────────────
+  gsap.utils.toArray('.jela-item').forEach(function (item, i) {
+    gsap.fromTo(item,
+      { opacity: 0, x: -12 },
+      {
+        opacity: 1, x: 0,
+        duration: 0.85,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 87%',
+          once: true
+        }
+      }
+    );
+  });
+
+})();
+</script>
+
+</body>
+</html>
