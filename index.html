@@ -1464,11 +1464,7 @@
   gsap.registerPlugin(ScrollTrigger);
 
   // ── LENIS smooth scroll ───────────────────────────────
-  const lenis = new Lenis({
-    duration: 1.4,
-    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-    smoothWheel: true
-  });
+  const lenis = new Lenis({lerp:0.2, wheelMultiplier:1, smoothWheel:true, syncTouch:false});
 
   gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
   gsap.ticker.lagSmoothing(0);
